@@ -27,7 +27,6 @@
 #include <QFile>
 
 
-
 /*!
   class SuppRanges
   */
@@ -124,7 +123,7 @@ bool Suppression::setKind( QString str )
       return false;
    }
    
-   QRegExp re( list[0], Qt::CaseInsensitive );
+   QRegularExpression re( list[0], QRegularExpression::CaseInsensitiveOption);
    int idx = SuppRanges::instance().getKindTools().indexOf( re );
    if ( idx == -1 ) {
       vkPrintErr("Bad Tool (%s) for this suppression (%s).",
@@ -166,7 +165,7 @@ bool Suppression::addFrame( QString str )
    }
 
    if ( !SuppRanges::instance().getFrameTypes().contains( list[0], Qt::CaseInsensitive ) ) {
-      vkPrintErr( "Unsupported frame type (%s) for suppression '%s'.",
+       vkPrintErr( "Unsupported frame type (%s) for suppression '%s'.",
                   qPrintable(list[0]), qPrintable(m_name) );
       return false;
    }
@@ -197,7 +196,7 @@ bool Suppression::fromStringList( const QStringList& lines )
    if ( !setKind( lines[i++] ) ) return false;
 
    // kaux (optional)
-   QRegExp re( "Memcheck:Param", Qt::CaseInsensitive );
+   QRegularExpression re( "Memcheck:Param", QRegularExpression::CaseInsensitiveOption );
    if ( m_kind.contains( re ) &&
          !(lines.at(i).startsWith("obj:") ||
            lines.at(i).startsWith("fun:") ) ) {
@@ -261,7 +260,7 @@ bool SuppList::readSuppFile( QString& fname )
 
    while (!in.atEnd()) {
       QString line = in.readLine().simplified();
-      if ( line.contains(QRegExp("^\\{$")) ) {     // start of new supp
+      if ( line.contains(QRegularExpression("^\\{$")) ) {     // start of new supp
          QStringList suppLines;
          Suppression supp;
 
@@ -269,7 +268,7 @@ bool SuppList::readSuppFile( QString& fname )
             line = in.readLine().simplified();
             if ( line.startsWith("#") || line.isEmpty() )
                continue;
-            if ( line.contains(QRegExp("^\\}$")) ) // end of supp
+            if ( line.contains(QRegularExpression("^\\}$")) ) // end of supp
                break;
             suppLines += line;
          }
@@ -360,6 +359,7 @@ bool SuppList::initSuppsFile( const QString& fname )
    if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
    {
       QTextStream stream( &file );
+
       stream << "# Valgrind suppressions file\n"
              << "# Created by: Valkyrie (" + VkCfg::appVersion() + ")\n"
              << "# Date: " + QDateTime::currentDateTimeUtc().toString() << "\n"
@@ -378,8 +378,9 @@ bool SuppList::initSuppsFile( const QString& fname )
              << "# Note: Multiple tools per kind e.g. TOOL(,TOOL)*::KIND' is not (yet) supported.\n"
              << "#\n"
              << "# Note: For Memcheck, the the optional aux info is:\n"
-             << "#       if (KIND == 'Param'): KAUX = system call param e.g. 'write(buf)'\n" << endl;
+             << "#       if (KIND == 'Param'): KAUX = system call param e.g. 'write(buf)'\n" << Qt::endl;
       
+
       file.close();
       return true;
    }

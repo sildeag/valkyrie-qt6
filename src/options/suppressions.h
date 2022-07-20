@@ -24,6 +24,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QRegularExpression>
 
 // TODO: what's reasonable? what does Vg allow?
 #define MAX_SUPP_FRAMES 20

@@ -26,7 +26,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
-
+#include <QRegularExpression>
 
 // ============================================================
 class SuppFrame : public QWidget

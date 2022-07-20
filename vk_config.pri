@@ -30,7 +30,7 @@ doc_imgs.path  = $$DATADIR/$$PACKAGE/doc/images
 
 ######################################################################
 # Qt modules
-QT += core xml widgets printsupport
+QT += core5compat core xml widgets printsupport
 
 
 ######################################################################

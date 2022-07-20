@@ -29,6 +29,7 @@
 #include <QFileInfo>
 #include <QPoint>
 #include <QStringList>
+#include <QRegularExpression>
 
 
 // TODO: put this in a define in the build scripts,or something.
@@ -487,10 +488,10 @@ int Valkyrie::checkOptArg( int optid, QString& argval )
                // editor flag, plus our replacement string (%n)
                QFileInfo fi( argval );
                QString fname = fi.fileName();
-               if ( fname.contains( QRegExp( "^(emacs|gedit|gvim|nano|nedit)[\\W]*" ) ) ) {
+               if ( fname.contains( QRegularExpression( "^(emacs|gedit|gvim|nano|nedit)[\\W]*" ) ) ) {
                   argval += " +%n";
                }
-               else if ( fname.contains( QRegExp( "^kate[\\W]*" ) ) ) {
+               else if ( fname.contains( QRegularExpression( "^kate[\\W]*" ) ) ) {
                   argval += " --line %n -use";
                }
                else {
@@ -509,7 +510,7 @@ int Valkyrie::checkOptArg( int optid, QString& argval )
          }
 
          // check filename format: ".*\.VkCfg::filetype()$"
-         if ( !argval.contains( QRegExp( ".*\\." + VkCfg::filetype() + "$" ) ) ) {
+         if ( !argval.contains( QRegularExpression( ".*\\." + VkCfg::filetype() + "$" ) ) ) {
             return PERROR_BADFILENAME;
          }
 
@@ -600,7 +601,7 @@ int Valkyrie::checkOptArg( int optid, QString& argval )
 */
 VkOption* Valkyrie::findOption( QString& optKey )
 {
-   QStringList parts = optKey.split( "/", QString::SkipEmptyParts );
+   QStringList parts = optKey.split( "/", Qt::SkipEmptyParts );
    vk_assert( parts.count() == 2 );
    QString optGrp = parts.at( 0 );
    QString optFlag = parts.at( 1 );
@@ -756,7 +757,7 @@ QStringList Valkyrie::getTargetFlags()
       // add any target binary flags
       opt    = options.getOption( VALKYRIE::BIN_FLAGS );
       cfgVal = vkCfgProj->value( opt->configKey() ).toString();
-      modFlags += cfgVal.split( " ", QString::SkipEmptyParts );
+      modFlags += cfgVal.split( " ", Qt::SkipEmptyParts );
    }
    
    return modFlags;

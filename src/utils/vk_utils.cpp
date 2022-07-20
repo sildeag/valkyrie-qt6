@@ -27,7 +27,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 
 #include <sys/types.h>
@@ -163,15 +163,18 @@ QString vk_mkstemp( QString filepath, QString ext/*=QString::null*/ )
 */
 int strVersion2hex( QString ver_str )
 {
-   QRegExp rxver( ".*(\\d{1,2})\\.(\\d{1,2})\\.(\\d{1,2}).*" );
-   
-   if ( rxver.indexIn( ver_str ) == -1 ) {
-      return -1;
+   QRegularExpression rxver( ".*(\\d{1,2})\\.(\\d{1,2})\\.(\\d{1,2}).*" );
+
+   qsizetype from = 0;
+   QRegularExpressionMatch match;
+   while ((from = ver_str.indexOf(rxver, from, &match)) != -1) {
+       from += match.capturedLength();
+
    }
-   
-   int major = rxver.cap( 1 ).toInt();
-   int minor = rxver.cap( 2 ).toInt();
-   int patch = rxver.cap( 3 ).toInt();
+
+   int major = match.captured( 1 ).toInt();
+   int minor = match.captured( 2 ).toInt();
+   int patch = match.captured( 3 ).toInt();
    return ( major << 16 ) + ( minor << 8 ) + patch;
 }
 
@@ -589,10 +592,10 @@ QString vkDlgCfgGetFile( QWidget* parent,
       QFileInfo fi;
       // check first project cfg then glbl cfg for the path key
       if ( vkCfgProj->contains( cfg_key_path ) ) {
-         fi = vkCfgProj->value( cfg_key_path ).toString();
+         fi.setFile(vkCfgProj->value( cfg_key_path ).toString());
       }
       else if ( vkCfgGlbl->contains( cfg_key_path ) ) {
-         fi = vkCfgGlbl->value( cfg_key_path ).toString();
+         fi.setFile(vkCfgGlbl->value( cfg_key_path ).toString());
          isProjKey = false;
       }
       else {

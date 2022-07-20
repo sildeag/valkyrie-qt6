@@ -137,7 +137,7 @@ VgLogView* MemcheckView::createVgLogView()
 void MemcheckView::setupLayout()
 {
    QVBoxLayout* vLayout = new QVBoxLayout( this );
-   vLayout->setMargin(0);
+   vLayout->setContentsMargins(0,0,0,0);
    
    treeView = new QTreeWidget( this );
    treeView->setObjectName( QString::fromUtf8( "treeview_Memcheck" ) );
@@ -438,7 +438,7 @@ void MemcheckView::popupMenu( const QPoint& pos )
    else if ( act == &actCopyXML ) {
       QString xml;
       QTextStream ts(&xml);
-      ts << item->getElement() << endl;
+      ts << item->getElement() << Qt::endl;
       QClipboard *clipboard = QApplication::clipboard();
       clipboard->setText( xml );
    }
